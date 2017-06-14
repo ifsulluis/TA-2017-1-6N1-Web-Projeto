@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:form id="formEdicao">
+        <h:panelGroup rendered="#{controlePessoa.editando}">
+            <div class="ui-fluid">
+                <p:messages/>
+                <p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-20"
+                             layout="grid" styleClass="ui-panelgrid-blank">
+                    <f:facet name="header">
+                        <p:outputLabel value="Edição de Pessoas"/>
+                    </f:facet>
+                    <p:outputLabel for="txtID" value="ID"/>
+                    <p:inputText id="txtID" value="#{controlePessoa.objeto.id}" readonly="true"
+                                 size="10"/>
+                    <p:outputLabel for="txtNome" value="Nome"/>
+                    <p:inputText id="txtNome" value="#{controlePessoa.objeto.nome}"
+                                 size="40" maxlength="40"       
+                                 placeholder="Obrigatório"/>
+                    <p:outputLabel for="txtEmail" value="Email"/>
+                    <p:inputText id="txtEmail" value="#{controlePessoa.objeto.email}"
+                                 size="50" maxlength="50"
+                                 placeholder="Obrigatório"/>
+                    <p:inputText id="txtRg" value="#{controlePessoa.objeto.rg}"
+                                 size="50" maxlength="50"
+                                 placeholder="Obrigatório"/>
+                    <p:outputLabel for="txtNascimento" value="Nascimento"/>
+                    <p:calendar id="txtNascimento" value="#{controlePessoa.objeto.nascimento}"
+                                mask="true" pattern="dd/MM/yyyy"
+                                placeholder="Obrigatório"
+                                navigator="true">
+                        <f:converter converterId="converterCalendar"/>
+                    </p:calendar>
+                    <p:outputLabel value="Nome da pessoa" for="txtPessoa"/>
+                    <p:inputText id="txtPessoa" value="#{controlePessoa.objeto.pessoa}"
+                                 size="30" maxlength="30" placeholder="Obrigatório"/>
+                    
+                                    
+                    <p:commandButton value="Salvar" icon="ui-icon-disk"
+                                     actionListener="#{controlePessoa.salvar()}"
+                                     update="formEdicao :formListagem"/>
+                </p:panelGrid>
+                <h:panelGroup id="painelProduto">
+                    <p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-20"
+                        layout="grid" styleClass="ui-panelgrid-blank"
+                        rendered="#{controlePessoa.editandoProduto}">
+                        <f:facet name="header">
+                            <p:outputLabel value="Novo produto da pessoa"/>
+                        </f:facet>             
+                        <p:outputLabel value="Produto"/>
+                        <p:selectOneMenu id="selectProduto" value="#{controlePessoa.produto}">
+                            <f:selectItem itemLabel="Selecione um registro" 
+                                          noSelectionOption="true"/>
+                            <f:selectItems value="#{controlePessoa.daoProduto.listaTodos}"
+                                           var="p" itemLabel="#{p.nome}"/>
+                            <f:converter converterId="converterProduto"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value=""/>
+                        <p:commandButton value="Salvar Produto" icon="ui-icon-disk"
+                                         actionListener="#{controlePessoa.salvarProduto()}"
+                                         id="btnSalvarProduto"
+                                         process="btnSalvarProduto selectProduto"
+                                         update="@form"/>
+                    </p:panelGrid>
+                </h:panelGroup>
+            </div>
+            <h:panelGroup id="listagemFavoritos">
+                <h:panelGroup rendered="#{!controlePessoa.editandoProduto}">
+                    <p:commandButton value="Novo Produto" icon="ui-icon-plus"
+                                     actionListener="#{controlePessoa.novaProduto()}"
+                                     update="painelProduto listagemFavoritos"
+                                     process="@this"/>
+                    <p:dataTable value="#{controlePessoa.objeto.favoritos}"
+                                 var="per" reflow="true">
+                        <f:facet name="header">
+                            <p:outputLabel value="Produtos favoritos da pessoa"/>
+                        </f:facet>
+                        <p:column headerText="Nome">
+                            <p:outputLabel value="#{per.nome}"/>
+                        </p:column>
+                        <p:column headerText="Descrição">
+                            <p:outputLabel value="#{per.descricao}"/>
+                        </p:column>
+                        <p:column headerText="Preço">
+                            <p:outputLabel value="#{per.preco}"/>
+                        </p:column>
+
+                        <p:column headerText="Ações">
+                            <div align="center">
+                                <p:commandButton icon="ui-icon-trash"
+                                  actionListener="#{controlePessoa.removerProduto(per)}"
+                                  process="@this" update="@form"/>
+                            </div>
+                        </p:column>                        
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGroup>
+    </h:form>
+</html>
+
